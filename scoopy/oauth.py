@@ -13,10 +13,23 @@ AUTHORIZE_URL = '%s/oauth/authorize' % BASE_URL
 
 
 class OAuthException(Exception):
-    pass
+    """
+    Basic exception for OAuth related errors.
+    """
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 
 class OAuth(object):
+    """
+    Helper class for all OAuth related actions.
+
+    Constructor params:
+        - consumer_key (str): the application's API consumer key
+        - consumer_secret (str): the application's API consumer secret
+    """
     def __init__(self, consumer_key, consumer_secret):
         self.consumer = oauth2.Consumer(consumer_key, consumer_secret)
         self.client = oauth2.Client(self.consumer)
@@ -26,6 +39,9 @@ class OAuth(object):
         self.access_token_secret = None
 
     def get_request_token(self):
+        """
+        Request the server for a request_token and return it.
+        """
         response, content = self.client.request(REQUEST_TOKEN_URL, 'GET')
         if response['status'] != '200':
             raise OAuthException("Failed to get request token (%s)" % response['status'])
@@ -35,11 +51,17 @@ class OAuth(object):
         return self.request_token, self.request_token_secret
 
     def get_access_token_url(self):
+        """
+        Generate the URL needed for the user to accept the application and return it.
+        """
         if self.request_token is None:
             raise OAuthException("Request token is not set")
         return "%s?oauth_token=%s" % (AUTHORIZE_URL, self.request_token)
 
     def get_access_token(self, token_verifier):
+        """
+        Request the server for an access token and return it.
+        """
         token = oauth2.Token(self.request_token, self.request_token_secret)
         token.set_verifier(token_verifier)
         self.client = oauth2.Client(self.consumer, token)
