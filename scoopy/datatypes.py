@@ -16,6 +16,19 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [
+    'Topic',
+    'TopicTag',
+    'Post',
+    'PostComment',
+    'Source',
+    'User',
+    'Sharer',
+    'Notification',
+    'NotificationType',
+    'TopicStats',
+]
+
 
 class ScoopItObject(object):
     """

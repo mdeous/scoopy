@@ -22,6 +22,16 @@ from urlparse import parse_qsl
 
 import oauth2
 
+__all__ = [
+    'REQUEST_TOKEN_URL',
+    'ACCESS_TOKEN_URL',
+    'AUTHORIZE_URL',
+    'OAuthException',
+    'OAuthRequestFailure',
+    'OAuthTokenError',
+    'OAuth',
+]
+
 
 BASE_URL = 'https://www.scoop.it'
 REQUEST_TOKEN_URL = '%s/oauth/request' % BASE_URL
