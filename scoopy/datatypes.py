@@ -16,16 +16,6 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-try:
-    import json # python>=2.6
-except ImportError:
-    try:
-        import simplejson as json
-    except ImportError:
-        print "Python < 2.6 and simplejson not found, exiting."
-        import sys
-        sys.exit(2)
-
 
 class ScoopItObject(object):
     """
