@@ -16,6 +16,9 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import cPickle
+import os
+import shelve
 from time import time
 from urllib import urlencode
 from urlparse import parse_qsl
@@ -80,6 +83,25 @@ class OAuth(object):
         self.client = oauth2.Client(self.consumer)
         self.token = None
         self.access_granted = False
+
+    def save_token(self, filepath):
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        db = shelve.open(filepath, protocol=cPickle.HIGHEST_PROTOCOL)
+        if self.token is None:
+            raise OAuthTokenError('No token found, get one first')
+        #TODO: if access is not granted, warn user the token saved will be a request_token
+        db['oauth_token'] = self.token.key
+        db['oauth_token_secret'] = self.token.secret
+        db.close()
+
+    def load_token(self, filename):
+        db = shelve.open(filename, protocol=cPickle.HIGHEST_PROTOCOL)
+        self.token = oauth2.Token(
+            db['oauth_token'],
+            db['oauth_token_secret']
+        )
+        db.close()
 
     def get_request_token(self):
         """
