@@ -35,7 +35,6 @@ __all__ = [
     'OAuth',
 ]
 
-
 BASE_URL = 'https://www.scoop.it'
 REQUEST_TOKEN_URL = '%s/oauth/request' % BASE_URL
 ACCESS_TOKEN_URL = '%s/oauth/access' % BASE_URL
@@ -72,7 +71,7 @@ class OAuth(object):
     """
     Helper class for all OAuth related actions.
 
-    Constructor params:
+    Constructor parameters:
         - consumer_key (str): the application's API consumer key
         - consumer_secret (str): the application's API consumer secret
     """
@@ -95,8 +94,8 @@ class OAuth(object):
         db['oauth_token_secret'] = self.token.secret
         db.close()
 
-    def load_token(self, filename):
-        db = shelve.open(filename, protocol=cPickle.HIGHEST_PROTOCOL)
+    def load_token(self, filepath):
+        db = shelve.open(filepath, protocol=cPickle.HIGHEST_PROTOCOL)
         self.token = oauth2.Token(
             db['oauth_token'],
             db['oauth_token_secret']
