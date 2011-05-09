@@ -100,6 +100,7 @@ class OAuth(object):
             db['oauth_token'],
             db['oauth_token_secret']
         )
+        self.client = oauth2.Client(self.consumer, self.token)
         db.close()
 
     def get_request_token(self):
