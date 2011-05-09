@@ -36,10 +36,11 @@ class ScoopItObject(object):
     """
     _convert_map = {}
 
-    def __init__(self, raw_data):
+    def __init__(self, api, raw_data):
+        self.api = api
         for key, value in raw_data.iteritems():
             if key in self._convert_map:
-                setattr(self, key, self._convert_map[key](value))
+                setattr(self, key, self._convert_map[key](self.api, value))
             else:
                 setattr(self, key, value)
 
@@ -49,27 +50,32 @@ class Topic(ScoopItObject):
     Holds data related to a topic.
     """
     _convert_map = {
-        'creator': lambda x: User(x),
-        'pinnedPost': lambda x: Post(x),
-        'curablePosts': lambda x: [Post(y) for y in x],
-        'curatedPosts': lambda x: [Post(y) for y in x],
-        'tags': lambda x: [TopicTag(y) for y in x],
+        'creator': lambda api, data: User(api, data),
+        'pinnedPost': lambda api, data: Post(api, data),
+        'curablePosts': lambda api, data: [Post(api, i) for i in data],
+        'curatedPosts': lambda api, data: [Post(api, i) for i in data],
+        'tags': lambda api, data: [TopicTag(api, i) for i in data],
     }
 
-    def __init__(self, raw_data):
+    def __init__(self, api, raw_data, stats=None):
+        self.stats = TopicStats(api, stats)
         self.curablePostCount = None
         self.unreadPostCount = None
         self.pinnedPost = None
         self.curablePosts = []
         self.curatedPosts = []
-        super(Topic, self).__init__(raw_data)
+        super(Topic, self).__init__(api, raw_data)
+
+    def __str__(self):
+        return "<Topic(name=%d)>" % self.name
 
 
 class TopicTag(ScoopItObject):
     """
     Holds data related to a tag of a topic.
     """
-    pass
+    def __str__(self):
+        return "<TopicTag(tag='%s')>" % self.tag
 
 
 class Post(ScoopItObject):
@@ -77,22 +83,28 @@ class Post(ScoopItObject):
     Holds data related to a post.
     """
     _convert_map = {
-        'source': lambda x: Source(x),
-        'comments': lambda x: [PostComment(y) for y in x],
-        'topic': lambda x: Topic(x),
+        'source': lambda api, data: Source(api, data),
+        'comments': lambda api, data: [PostComment(api, i) for i in data],
+        'topic': lambda api, data: Topic(api, data),
     }
 
-    def __init__(self, raw_data):
+    def __init__(self, api, raw_data):
         self.thanked = None
         self.topic = None
-        super(Post, self).__init__(raw_data)
+        super(Post, self).__init__(api, raw_data)
+
+    def __str__(self):
+        return "<Post(title='%s')>" % self.title
 
 
 class PostComment(ScoopItObject):
     """
     Holds data related to a comment.
     """
-    _convert_map = {'author': lambda x: User(x), }
+    _convert_map = {'author': lambda api, data: User(api, data), }
+
+    def __str__(self):
+        return "<PostComment(author='%s')>" % self.author
 
 
 class Source(ScoopItObject):
@@ -100,7 +112,8 @@ class Source(ScoopItObject):
     Holds data related to a source: something that suggests
     content to curate to users.
     """
-    pass
+    def __str__(self):
+        return "<Source(name='%s')>" % self.name
 
 
 class User(ScoopItObject):
@@ -108,13 +121,16 @@ class User(ScoopItObject):
     Holds data related to a user.
     """
     _convert_map = {
-        'sharers': lambda x: [Sharer(y) for y in x],
-        'curatedTopics': lambda x: [Topic(y) for y in x],
+        'sharers': lambda api, data: [Sharer(api, i) for i in data],
+        'curatedTopics': lambda api, data: [Topic(api, i) for i in data],
     }
 
-    def __init__(self, raw_data):
+    def __init__(self, api, raw_data):
         self.sharers = []
-        super(User, self).__init__(raw_data)
+        super(User, self).__init__(api, raw_data)
+
+    def __str__(self):
+        return "<User(name='%s')>" % self.name
 
 
 class Sharer(ScoopItObject):
@@ -124,20 +140,27 @@ class Sharer(ScoopItObject):
     dedicated website page (eg: twitter account, facebook
     account, tumblr account).
     """
-    pass
+    def __str__(self):
+        return "<Sharer(name='%s')>" % self.name
 
 
 class Notification(ScoopItObject):
     """
     Holds data related to a notification.
     """
-    _convert_map = {'type': lambda x: NotificationType(x), }
+    _convert_map = {'type': lambda api, data: NotificationType(api, data), }
+    #TODO: find how to represent the notification_type
+    #TODO: (simply an enum, really needs its own object?)
+
+    def __str__(self):
+        return "<Notification(type='%s')>" % self.type
 
 
 class NotificationType(ScoopItObject):
     """
     Describes the type of a notification.
     """
+    #TODO: find how to represent it in __str__
     pass
 
 
@@ -145,4 +168,5 @@ class TopicStats(ScoopItObject):
     """
     Holds statistics related to a topic.
     """
-    pass
+    def __str__(self):
+        return "<TopicStats(creatorName='%s')>" % self.creatorName
