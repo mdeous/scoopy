@@ -16,6 +16,9 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import datetime
+import time
+
 __all__ = [
     'Topic',
     'TopicTag',
@@ -49,6 +52,7 @@ class Topic(ScoopItObject):
     """
     Holds data related to a topic.
     """
+    #TODO: handle post actions
     _convert_map = {
         'creator': lambda api, data: User(api, data),
         'pinnedPost': lambda api, data: Post(api, data),
@@ -82,6 +86,7 @@ class Post(ScoopItObject):
     """
     Holds data related to a post.
     """
+    #TODO: handle post actions
     _convert_map = {
         'source': lambda api, data: Source(api, data),
         'comments': lambda api, data: [PostComment(api, i) for i in data],
@@ -170,3 +175,43 @@ class TopicStats(ScoopItObject):
     """
     def __str__(self):
         return "<TopicStats(creatorName='%s')>" % self.creatorName
+
+
+class Timestamp(object):
+    """
+    A timestamp object (what else to say?).
+    This class also provides shortcuts to create Timestamp
+    objects for 'yesterday', 'last_month', and 'last_year'.
+
+    Constructor parameters:
+      - value (int): the timestamp value
+    """
+    one_day = datetime.timedelta(1)
+    one_month = datetime.timedelta(30)
+    one_year = datetime.timedelta(365)
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        datetime_str = datetime.datetime.fromtimestamp(self.value)
+        return "<Timestamp(value='%s')>" % str(datetime_str)
+
+    @classmethod
+    def from_datetime(cls, dt):
+        return Timestamp((int(time.mktime(dt.timetuple()))))
+
+    @classmethod
+    def yesterday(cls):
+        day = datetime.date.today() - Timestamp.one_day
+        return Timestamp(Timestamp.from_datetime(day).value)
+
+    @classmethod
+    def last_month(cls):
+        day = datetime.date.today() - Timestamp.one_month
+        return Timestamp(Timestamp.from_datetime(day).value)
+
+    @classmethod
+    def last_year(cls):
+        day = datetime.date.today() - Timestamp.one_year
+        return Timestamp(Timestamp.from_datetime(day).value)
