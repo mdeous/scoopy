@@ -89,6 +89,8 @@ class Post(ScoopItObject):
     #TODO: handle post actions
     _convert_map = {
         'source': lambda api, data: Source(api, data),
+        'publicationDate': lambda api, data: Timestamp(data),
+        'curationDate': lambda api, data: Timestamp(data),
         'comments': lambda api, data: [PostComment(api, i) for i in data],
         'topic': lambda api, data: Topic(api, data),
     }
@@ -106,7 +108,10 @@ class PostComment(ScoopItObject):
     """
     Holds data related to a comment.
     """
-    _convert_map = {'author': lambda api, data: User(api, data), }
+    _convert_map = {
+        'date': lambda api, data: Timestamp(data),
+        'author': lambda api, data: User(api, data),
+    }
 
     def __str__(self):
         return "<PostComment(author='%s')>" % self.author
