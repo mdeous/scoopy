@@ -16,9 +16,9 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import cPickle
 import os
 import shelve
+from cPickle import HIGHEST_PROTOCOL
 from time import time
 from urllib import urlencode
 from urlparse import parse_qsl
@@ -86,16 +86,16 @@ class OAuth(object):
     def save_token(self, filepath):
         if os.path.exists(filepath):
             os.remove(filepath)
-        db = shelve.open(filepath, protocol=cPickle.HIGHEST_PROTOCOL)
+        db = shelve.open(filepath, protocol=HIGHEST_PROTOCOL)
         if self.token is None:
-            raise OAuthTokenError('No token found, get one first')
+            raise OAuthTokenError('no token found, get one first')
         #TODO: if access is not granted, warn user the token saved will be a request_token
         db['oauth_token'] = self.token.key
         db['oauth_token_secret'] = self.token.secret
         db.close()
 
     def load_token(self, filepath):
-        db = shelve.open(filepath, protocol=cPickle.HIGHEST_PROTOCOL)
+        db = shelve.open(filepath, protocol=HIGHEST_PROTOCOL)
         self.token = oauth2.Token(
             db['oauth_token'],
             db['oauth_token_secret']
@@ -110,7 +110,7 @@ class OAuth(object):
         response, content = self.client.request(REQUEST_TOKEN_URL, 'GET')
         if response['status'] != '200':
             raise OAuthRequestFailure(
-                "Failed to get request_token (%s)" % response['status']
+                "failed to get request_token (%s)" % response['status']
             )
         request_token = dict(parse_qsl(content))
         self.token = oauth2.Token(
@@ -125,7 +125,7 @@ class OAuth(object):
         """
         if self.token is None:
             raise OAuthTokenError(
-                "No request_token found, get one first"
+                "no request_token found, get one first"
             )
         #TODO: warn user if access already granted
         return "%s?oauth_token=%s&oauth_callback=%s" % (
@@ -143,7 +143,7 @@ class OAuth(object):
         response, content = self.client.request(ACCESS_TOKEN_URL, 'POST')
         if response['status'] != '200':
             raise OAuthRequestFailure(
-                "Failed to get access_token (%s)" % response['status']
+                "failed to get access_token (%s)" % response['status']
             )
         self.access_granted = True
         access_token = dict(parse_qsl(content))
@@ -170,9 +170,17 @@ class OAuth(object):
         return urlencode(request_params)
 
     def request(self, url, params, method='GET'):
+        request_params = ''
+        if method.lower() == 'get':
+            if params:
+                url += ('?' + urlencode(params))
+        elif method.lower() == 'post':
+            request_params = self.generate_request_params(params)
+        else:
+            raise OAuthRequestFailure("request method can only be 'GET' or 'POST'")
         return self.client.request(
             url,
             method=method,
-            body=self.generate_request_params(params),
+            body=request_params,
             headers={'Accept-encoding': 'gzip'},
         )
