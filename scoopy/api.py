@@ -135,14 +135,15 @@ class ScoopItAPI(object):
         Returns: a dict containing requested data
         """
         status, data = self.oauth.request(url, params, method)
-        if status['status'] != '200':
+        data = json.loads(data)
+        if not data['success']:
             raise ScoopItError(
-                "an error occured while requesting '%s' (%s %s)" % (
-                    url,
+                "%s %s: %s" % (
                     status['status'],
-                    ERROR_MESSAGES[status['status']]
+                    ERROR_MESSAGES[status['status']],
+                    data['error']
                 ))
-        return json.loads(data)
+        return data
 
     def get_profile(self, profile_id=None, curated=None, curable=None):
         """
@@ -169,8 +170,7 @@ class ScoopItAPI(object):
         if curable is not None:
             params['curable'] = curable
         response = self.request(PROFILE_URL, params)
-#        return User(response['user'])
-        return response['user']
+        return User(self, response['user'])
 
     def get_topic(self, topic_id, curated=None, curable=None,
                   order=None, tag=None, since=None):
@@ -188,7 +188,7 @@ class ScoopItAPI(object):
                          'curationDate', or 'user' (mandatory if 'since'
                          parameter is not specified
           - tag (str): tag used to filter results (mandatory if 'order'=='tag')
-          - since (int): only retrieve curated posts newer than this timestamp
+          - since (Timestamp): only retrieve curated posts newer than this
 
         Returns: a '(Topic, TopicStats)' tuple
         """
@@ -214,10 +214,9 @@ class ScoopItAPI(object):
         if tag is not None:
             params['tag'] = tag
         if since is not None:
-            params['since'] = since
+            params['since'] = since.value
         response = self.request(TOPIC_URL, params)
-#        return Topic(response['topic'], response['stats'])
-        return response['topic'], response['stats']
+        return Topic(self, response['topic'], response['stats'])
 
     def get_post(self, post_id):
         """
@@ -232,24 +231,22 @@ class ScoopItAPI(object):
             'id': post_id,
         }
         response = self.request(POST_URL, params)
-#        return Post(response['post'])
-        return response['post']
+        return Post(self, response)
 
     def get_notifications(self, since=None):
         """
         Notifications for the current user.
 
         Parameters:
-          - since (int): only notifications from this timestamp will be returned
+          - since (Timestamp): only get notifications newer than this
 
         Returns: an iterator containing 'Notification' objects
         """
         params = {}
         if since is not None:
-            params['since'] = since
+            params['since'] = since.value
         response = self.request(NOTIFICATION_URL, params)
-#        return (Notification(n) for n in response['notifications'])
-        return response['notifications']
+        return [Notification(self, n) for n in response['notifications']]
 
     def get_compilation(self, since, count):
         """
@@ -257,20 +254,19 @@ class ScoopItAPI(object):
         Posts are ordered by date.
 
         Parameters:
-          - since (int): no posts older than this timestamp will be returned
+          - since (Timestamp): no posts older than this will be returned
           - count (int): maximum number of posts to return
 
         Returns: an iterator containing 'Post' objects
         """
         params = {
-            'since': since,
+            'since': since.value,
             'count': count,
         }
         response = self.request(COMPILATION_URL, params)
-#        return (Post(p) for p in response['posts'])
-        return response['posts']
+        return [Post(self, p) for p in response['posts']]
 
-    def get_resolver(self, type, short_name):
+    def resolve(self, type, short_name):
         """
         Resolve an object (topic or user) given its short name.
 
