@@ -16,6 +16,8 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+#TODO: move current __str__ to __repr__, and display objects hierarchy in __str__
+
 import datetime
 import time
 
@@ -28,7 +30,6 @@ __all__ = [
     'User',
     'Sharer',
     'Notification',
-    'NotificationType',
     'TopicStats',
 ]
 
@@ -41,6 +42,7 @@ class ScoopItObject(object):
 
     def __init__(self, api, raw_data):
         self.api = api
+        self.raw = raw_data
         for key, value in raw_data.iteritems():
             if key in self._convert_map:
                 setattr(self, key, self._convert_map[key](self.api, value))
@@ -62,7 +64,7 @@ class Topic(ScoopItObject):
     }
 
     def __init__(self, api, raw_data, stats=None):
-        self.stats = TopicStats(api, stats)
+        self.stats = None if (stats is None) else TopicStats(api, stats)
         self.curablePostCount = None
         self.unreadPostCount = None
         self.pinnedPost = None
@@ -71,7 +73,7 @@ class Topic(ScoopItObject):
         super(Topic, self).__init__(api, raw_data)
 
     def __str__(self):
-        return "<Topic(name=%d)>" % self.name
+        return "<Topic(name=%s)>" % self.name
 
 
 class TopicTag(ScoopItObject):
@@ -158,20 +160,11 @@ class Notification(ScoopItObject):
     """
     Holds data related to a notification.
     """
-    _convert_map = {'type': lambda api, data: NotificationType(api, data), }
     #TODO: find how to represent the notification_type
     #TODO: (simply an enum, really needs its own object?)
 
     def __str__(self):
         return "<Notification(type='%s')>" % self.type
-
-
-class NotificationType(ScoopItObject):
-    """
-    Describes the type of a notification.
-    """
-    #TODO: find how to represent it in __str__
-    pass
 
 
 class TopicStats(ScoopItObject):
@@ -182,7 +175,7 @@ class TopicStats(ScoopItObject):
         return "<TopicStats(creatorName='%s')>" % self.creatorName
 
 
-class Timestamp(object):
+class Timestamp(ScoopItObject):
     """
     A timestamp object (what else to say?).
     This class also provides shortcuts to create Timestamp
