@@ -1,6 +1,8 @@
 # Scoopy
 --------
 
+**/!\\ Warning: this library is still in development and is therefore it is not usable yet /!\\**
+
 ## 1. About it:
 
 Scoopy is a python library meant to interact with [Scoop.it](http://scoop.it) API in
