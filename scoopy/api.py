@@ -34,7 +34,7 @@ __all__ = [
     'TOPIC_URL',
     'POST_URL',
     'TEST_URL',
-    'NOTIFICATION_URL',
+    'NOTIFICATIONS_URL',
     'COMPILATION_URL',
     'RESOLVER_URL',
     'ScoopItAPI',
@@ -46,7 +46,7 @@ PROFILE_URL = '%s/api/1/profile' % BASE_URL
 TOPIC_URL = '%s/api/1/topic' % BASE_URL
 POST_URL = '%s/api/1/post' % BASE_URL
 TEST_URL = '%s/api/1/test' % BASE_URL
-NOTIFICATION_URL = '%s/api/1/notification' % BASE_URL
+NOTIFICATIONS_URL = '%s/api/1/notifications' % BASE_URL
 COMPILATION_URL = '%s/api/1/compilation' % BASE_URL
 RESOLVER_URL = '%s/api/1/resolver' % BASE_URL
 
@@ -245,7 +245,7 @@ class ScoopItAPI(object):
         params = {}
         if since is not None:
             params['since'] = since.value
-        response = self.request(NOTIFICATION_URL, params)
+        response = self.request(NOTIFICATIONS_URL, params)
         return [Notification(self, n) for n in response['notifications']]
 
     def get_compilation(self, since, count):
