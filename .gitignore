@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+*.pickle
+build/
+dist/
+scoopy.egg-info/
+docs/build/
