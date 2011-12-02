@@ -41,7 +41,6 @@ ACCESS_TOKEN_URL = '%s/oauth/access' % BASE_URL
 AUTHORIZE_URL = '%s/oauth/authorize' % BASE_URL
 
 
-#noinspection PyMissingConstructor
 class OAuthException(Exception):
     """
     Basic exception for OAuth related errors.
@@ -70,14 +69,16 @@ class OAuthTokenError(OAuthException):
 class OAuth(object):
     """
     Helper class for all OAuth related actions.
-
-    Constructor parameters:
-        - consumer_key (str): the application's API consumer key
-        - consumer_secret (str): the application's API consumer secret
     """
     signature_method = oauth2.SignatureMethod_HMAC_SHA1()
 
     def __init__(self, consumer_key, consumer_secret):
+        """
+        :param consumer_key: The application's API consumer key.
+        :type consumer_key: str.
+        :param consumer_secret: The application's API consumer secret.
+        :type consumer_secret: str.
+        """
         self.consumer = oauth2.Consumer(consumer_key, consumer_secret)
         self.client = oauth2.Client(self.consumer)
         self.token = None
