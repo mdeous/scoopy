@@ -15,6 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
+"""
+.. module:: api
+
+.. moduleauthor:: Mathieu D. (MatToufoutu) <mattoufootu[at]gmail.com>
+"""
 
 try:
     import json # python >= 2.6
