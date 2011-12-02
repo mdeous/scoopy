@@ -69,18 +69,21 @@ class ScoopItError(Exception):
 class ScoopItAPI(object):
     """
     Main class to access the Scoop.it API.
-
-    Constructor parameters:
-      - consumer_key: the application's API consumer key
-      - consumer_secret: the application's API consumer secret
     """
 
     def __init__(self, consumer_key, consumer_secret):
+        """
+        :param consumer_key: The application's API consumer key.
+        :type consumer_key: str.
+        :param consumer_secret: The application's API consumer secret.
+        """
         self.oauth = OAuth(consumer_key, consumer_secret)
 
     def get_oauth_request_token(self):
         """
         Ask the API server for an oauth request_token.
+
+        :returns: None
         """
         self.oauth.get_request_token()
 
@@ -88,10 +91,9 @@ class ScoopItAPI(object):
         """
         Generate an access authorization URL.
 
-        Parameters:
-          - callback_url (str): the url where the user should be redirected
-
-        Returns: the URL the user should follow to allow the application
+        :param callback_url: The url to which the user should be redirected.
+        :type callback_url: str.
+        :returns: str -- The url to authorize the application.
         """
         return self.oauth.get_access_token_url(callback_url)
 
@@ -99,8 +101,9 @@ class ScoopItAPI(object):
         """
         Ask the API server for an oauth access_token.
 
-        Parameters:
-          - token_verifier (str): the code returned by the access_token url
+        :param token_verifier: The code returned by the access_token url.
+        :type token_verifier: str.
+        :returns: None.
         """
         self.oauth.get_access_token(token_verifier)
 
@@ -108,8 +111,9 @@ class ScoopItAPI(object):
         """
         Save the current OAuth token to a file.
 
-        Parameters:
-          - filepath (str): path to the file where the token will be saved
+        :param filepath: Path to the file where the token should be saved.
+        :type filepath: str.
+        :returns: None.
         """
         self.oauth.save_token(filepath)
 
@@ -117,8 +121,9 @@ class ScoopItAPI(object):
         """
         Load a previously saved OAuth token.
 
-        Parameters:
-          - filepath (str): path to the file containing the token
+        :param filepath: Path to the file containing the token.
+        :type filepath: str.
+        :returns: None.
         """
         self.oauth.load_token(filepath)
 
@@ -127,12 +132,13 @@ class ScoopItAPI(object):
         Make a request to an API end-point, request will be signed using
         the current OAuth token.
 
-        Parameters:
-          - url (str): the end-point URL
-          - params (dict): parameters to pass into the request
-          - method (str): the method used to perform the request
-
-        Returns: a dict containing requested data
+        :param url: The end-point url.
+        :type url: str.
+        :param params: Parameters to pass to the request.
+        :type params: dict.
+        :param method: The HTTP method used to perform the request.
+        :type method: str.
+        :returns: dict -- Data returned by the server.
         """
         status, data = self.oauth.request(url, params, method)
         data = json.loads(data)
@@ -149,16 +155,14 @@ class ScoopItAPI(object):
         """
         Access a user's profile.
 
-        Parameters:
-          - profile_id (int): id of the profile's owned (optional, defaults to
-                              the current user)
-          - curated (int): number of curated posts to retrieve for each topic
-                           present in user data (optional, defaults to 0)
-          - curable (int): number of curable posts to retrieve for each topic
-                           the current user is the curator (optional, defaults
-                           to 0)
-
-        Returns: a 'User' object
+        :param profile_id: Profile owner's ID (defaults to the current user).
+        :type profile_id: int or None.
+        :param curated: Numer of curated posts to retrieve for each
+                        topic (defaults to 0).
+        :type curated: int or None.
+        :param curable: Number of curable posts to retrieve for each topic
+                        where the user is curator (defaults to 0).
+        :returns: An :class:`scoopy.datatypes.User` object.
         """
         if (profile_id is not None) and (curable is not None):
             raise ScoopItError('profile_id and curable options are exclusive')
@@ -177,20 +181,22 @@ class ScoopItAPI(object):
         """
         Access a topic data (list of posts, statistics).
 
-        Parameters:
-          - topic_id (int): the id of the topic
-          - curated (int): number of curated posts to retrieve from
-                           this topic (optional, defaults to 30)
-          - curable (int): number of curable posts to retrieve for
-                           this topic, this parameter is ignored if the
-                           current user is the curator of this topic
-          - order (str): sort order of the curated posts, can be 'tag',
-                         'curationDate', or 'user' (mandatory if 'since'
-                         parameter is not specified
-          - tag (str): tag used to filter results (mandatory if 'order'=='tag')
-          - since (Timestamp): only retrieve curated posts newer than this
-
-        Returns: a '(Topic, TopicStats)' tuple
+        :param topic_id: The topic's ID.
+        :type topic_id: int or None.
+        :param curated: Number of curated posts to retrieve from the
+                        topic (defaults to 30).
+        :type curated: int or None.
+        :param curable: Number of curable posts to retrieve from the
+                        topic (defaults to 30).
+        :type curable: int or None.
+        :param order: Sort order of curated posts, can be 'tag', 'curationDate',
+                      or 'user' (mandatory if 'since' parameter isn't specified).
+        :type order: str.
+        :param tag: Tag used to filter results (mandatory if 'order' is 'tag').
+        :type tag: str.
+        :param since: Only retrieve curated posts newer than this.
+        :type since: :class:`scoopy.datatypes.Timestamp`.
+        :return: tuple -- (:class:`scoopy.datatypes.Topic`, :class:`scoopy.datatypes.TopicStats`)
         """
         # check for mandatory options
         if (curated is not None) and (curable is not None):
@@ -222,10 +228,9 @@ class ScoopItAPI(object):
         """
         Access a post data.
 
-        Parameters:
-          - post_id (int): id of the post
-
-        Returns: a 'Post' object
+        :param post_id: The ID of the post.
+        :type post_id: int.
+        :return: a :class:`scoopy.datatypes.Post` object.
         """
         params = {
             'id': post_id,
@@ -237,10 +242,9 @@ class ScoopItAPI(object):
         """
         Notifications for the current user.
 
-        Parameters:
-          - since (Timestamp): only get notifications newer than this
-
-        Returns: an iterator containing 'Notification' objects
+        :param since: Only get notifications newer than this.
+        :type since: :class:`scoopy.datatypes.Timestamp` or None.
+        :return: iterator -- :class:`scoopy.datatypes.Notification` objects.
         """
         params = {}
         if since is not None:
@@ -253,11 +257,11 @@ class ScoopItAPI(object):
         Get a compilation of followed topics of the current user.
         Posts are ordered by date.
 
-        Parameters:
-          - since (Timestamp): no posts older than this will be returned
-          - count (int): maximum number of posts to return
-
-        Returns: an iterator containing 'Post' objects
+        :param since: Only retrieve posts newer than this.
+        :type since: :class:`scoopy.datatypes.Timestamp`.
+        :param count: Maximum amount of posts to retrieve.
+        :type count: int.
+        :return: iterator -- :class:`scoopy.datatypes.Post` objects.
         """
         params = {
             'since': since.value,
@@ -266,20 +270,20 @@ class ScoopItAPI(object):
         response = self.request(COMPILATION_URL, params)
         return [Post(self, p) for p in response['posts']]
 
-    def resolve(self, type, short_name):
+    def resolve(self, entity, short_name):
         """
         Resolve an object (topic or user) given its short name.
 
-        Parameters:
-          - type (str): 'User' or 'Topic'
-          - short_name (str): a short name
-
-        Returns: the id corresponding to the given short name
+        :param entity: The type of entity to resolve ('user' or 'topic').
+        :type entity: str.
+        :param short_name: The short name to resolve.
+        :type short_name: str.
+        :return: str -- The ID corresponding to the given short name.
         """
-        if type.lower() not in ('user', 'topic'):
-            raise ScoopItError("type value can only be 'User' or 'Topic'")
+        if entity.lower() not in ('user', 'topic'):
+            raise ScoopItError("entity value can only be 'User' or 'Topic'")
         params = {
-            'type': type,
+            'type': entity,
             'shortName': short_name,
         }
         response = self.request(RESOLVER_URL, params)
