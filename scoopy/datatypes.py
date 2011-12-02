@@ -41,6 +41,12 @@ class ScoopItObject(object):
     _convert_map = {}
 
     def __init__(self, api, raw_data):
+        """
+        :param api: The API instance this object belongs to.
+        :type api: :class:`scoopy.api.ScoopItAPI`.
+        :param raw_data: The received data to convert to an object.
+        :type raw_data: dict.
+        """
         self.api = api
         self.raw = raw_data
         for key, value in raw_data.iteritems():
@@ -180,15 +186,16 @@ class Timestamp(ScoopItObject):
     A timestamp object (what else to say?).
     This class also provides shortcuts to create Timestamp
     objects for 'yesterday', 'last_month', and 'last_year'.
-
-    Constructor parameters:
-      - value (int): the timestamp value
     """
     one_day = datetime.timedelta(1)
     one_month = datetime.timedelta(30)
     one_year = datetime.timedelta(365)
 
     def __init__(self, value):
+        """
+        :param value: The timestamp value.
+        :type value: int.
+        """
         self.value = value
 
     def __str__(self):
