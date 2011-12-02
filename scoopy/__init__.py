@@ -21,4 +21,4 @@ from scoopy.oauth import *
 
 NAME = 'scoopy'
 VERSION = '0.1'
-AUTHOR = 'MatToufoutu'
+AUTHOR = 'Mathieu D. (MatToufoutu)'
