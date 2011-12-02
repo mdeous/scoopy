@@ -17,11 +17,13 @@
 #
 
 import os
-import shelve
-from cPickle import HIGHEST_PROTOCOL
 from time import time
 from urllib import urlencode
 from urlparse import parse_qsl
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 import oauth2
 
@@ -87,22 +89,20 @@ class OAuth(object):
     def save_token(self, filepath):
         if os.path.exists(filepath):
             os.remove(filepath)
-        db = shelve.open(filepath, protocol=HIGHEST_PROTOCOL)
         if self.token is None:
             raise OAuthTokenError('no token found, get one first')
         #TODO: if access is not granted, warn user the token saved will be a request_token
-        db['oauth_token'] = self.token.key
-        db['oauth_token_secret'] = self.token.secret
-        db.close()
+        db = {'oauth_token': self.token.key,
+              'oauth_token_secret': self.token.secret}
+        pickle.dump(db, open(filepath, 'wb'), pickle.HIGHEST_PROTOCOL)
 
     def load_token(self, filepath):
-        db = shelve.open(filepath, protocol=HIGHEST_PROTOCOL)
+        db = pickle.load(open(filepath, 'rb'))
         self.token = oauth2.Token(
             db['oauth_token'],
             db['oauth_token_secret']
         )
         self.client = oauth2.Client(self.consumer, self.token)
-        db.close()
 
     def get_request_token(self):
         """
