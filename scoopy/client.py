@@ -16,7 +16,7 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-.. module:: api
+.. module:: client
 
 .. moduleauthor:: Mathieu D. (MatToufoutu) <mattoufootu[at]gmail.com>
 """
