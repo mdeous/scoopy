@@ -94,10 +94,12 @@ class OAuth(object):
         #TODO: if access is not granted, warn user the token saved will be a request_token
         db = {'oauth_token': self.token.key,
               'oauth_token_secret': self.token.secret}
-        pickle.dump(db, open(filepath, 'wb'), pickle.HIGHEST_PROTOCOL)
+        with open(filepath, 'wb') as outfile:
+            pickle.dump(db, outfile, pickle.HIGHEST_PROTOCOL)
 
     def load_token(self, filepath):
-        db = pickle.load(open(filepath, 'rb'))
+        with open(filepath, 'rb') as infile:
+            db = pickle.load(infile)
         self.token = oauth2.Token(
             db['oauth_token'],
             db['oauth_token_secret']
