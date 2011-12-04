@@ -157,7 +157,7 @@ class ScoopItAPI(object):
                 ))
         return data
 
-    def get_profile(self, profile_id=None, curated=None, curable=None):
+    def profile(self, profile_id=None, curated=None, curable=None):
         """
         Access a user's profile.
 
