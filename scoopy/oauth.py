@@ -16,10 +16,14 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import with_statement
 import os
 from time import time
 from urllib import urlencode
-from urlparse import parse_qsl
+try:
+    from urlparse import parse_qsl
+except ImportError:
+    from cgi import parse_qsl
 try:
     import cPickle as pickle
 except ImportError:
@@ -110,7 +114,7 @@ class OAuth(object):
         """
         Request the server for a request_token and return it.
         """
-        response, content = self.client.request(REQUEST_TOKEN_URL, 'GET')
+        response, content = self.client.request(REQUEST_TOKEN_URL)
         if response['status'] != '200':
             raise OAuthRequestFailure(
                 "failed to get request_token (%s)" % response['status']

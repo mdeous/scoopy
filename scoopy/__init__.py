@@ -15,9 +15,9 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from .client import *
-from .datatypes import *
-from .oauth import *
+from scoopy.client import *
+from scoopy.datatypes import *
+from scoopy.oauth import *
 
 NAME = 'scoopy'
 VERSION = '0.1'
