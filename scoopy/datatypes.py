@@ -16,7 +16,7 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-#TODO: move current __str__ to __repr__, and display objects hierarchy in __str__
+#TODO: expose object's json representation in __str__
 
 import datetime
 import time
@@ -81,6 +81,20 @@ class Topic(ScoopItObject):
     def __str__(self):
         return "<Topic(name=%s)>" % self.name
 
+    def reorder(self, posts, start):
+        #TODO: write Topic.reorder() method
+        raise NotImplementedError
+
+    def _fum(self, action):
+        #TODO: write Topic._fum() method
+        raise NotImplementedError
+    def follow(self):
+        return self._fum('follow')
+    def unfollow(self):
+        return self._fum('unfollow')
+    def markread(self):
+        return self._fum('markread')
+
 
 class TopicTag(ScoopItObject):
     """
@@ -110,6 +124,55 @@ class Post(ScoopItObject):
 
     def __str__(self):
         return "<Post(title='%s')>" % self.title
+
+    def prepare(self, url):
+        #TODO: write Post.prepare() method
+        raise NotImplementedError
+
+    def create(self, title, url, content, image_url, topic_id, share_on):
+        #TODO: write Post.create() method
+        #XXX: should Post.create() be implemented as a classmethod?
+        raise NotImplementedError
+
+    def comment(self, comment):
+        #TODO: write Post.comment() method
+        raise NotImplementedError
+
+    def thank(self):
+        #TODO: write Post.thank() method
+        raise NotImplementedError
+
+    def accept(self, title, content, image_url, share_on, topic_id):
+        #TODO: write Post.accept() method
+        raise NotImplementedError
+
+    def forward(self, title, content, image_url, share_on, topic_id):
+        #TODO: write Post.forward() method
+        raise NotImplementedError
+
+    def refuse(self, reason):
+        #TODO: write Post.refuse() method
+        raise NotImplementedError
+
+    def delete(self):
+        #TODO: write Post.delete() method
+        raise NotImplementedError
+
+    def edit(self, tags, title, content, image_url):
+        #TODO: write Post.edit() method
+        raise NotImplementedError
+
+    def pin(self):
+        #TODO: write Post.pin() method
+        raise NotImplementedError
+
+    def rescoop(self, topic_id):
+        #TODO: write Post.rescoop() method
+        raise NotImplementedError
+
+    def share(self, share_on):
+        #TODO: write Post.share() method
+        raise NotImplementedError
 
 
 class PostComment(ScoopItObject):
@@ -166,8 +229,7 @@ class Notification(ScoopItObject):
     """
     Holds data related to a notification.
     """
-    #TODO: find how to represent the notification_type
-    #TODO: (simply an enum, really needs its own object?)
+    #TODO: find how to represent the notification_type (simply an enum, really needs its own object?)
 
     def __str__(self):
         return "<Notification(type='%s')>" % self.type
