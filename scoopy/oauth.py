@@ -16,10 +16,14 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import with_statement
 import os
 from time import time
 from urllib import urlencode
-from urlparse import parse_qsl
+try:
+    from urlparse import parse_qsl
+except ImportError:
+    from cgi import parse_qsl
 try:
     import cPickle as pickle
 except ImportError:
