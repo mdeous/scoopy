@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 *.pickle
+.tox/
 build/
 dist/
 scoopy.egg-info/
