@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import with_statement
 import oauth2
 import re
 from tempfile import NamedTemporaryFile
@@ -85,4 +86,7 @@ class OAuthTest(TestCase):
                                  CONSUMER_KEY+r'&oauth_version=1\.0&oauth_token='+\
                                  OAUTH_TOKEN+r'&param2=second\+%2FP%C3%A0ram%5C&param1=firstParam')
         result = self.oauth.generate_request_params(test_params)
-        self.assertRegexpMatches(result, expected_re)
+        try:
+            self.assertRegexpMatches(result, expected_re)
+        except AttributeError:
+            assert expected_re.match(result) is not None, "Result doesn't match reference regex."
