@@ -32,4 +32,5 @@ setup(
     license = 'GPL',
     classifiers = CLASSIFIERS,
     packages = ['scoopy'],
+    test_suite = 'scoopy.tests',
 )
