@@ -6,10 +6,34 @@
 Welcome to scoopy's documentation!
 ==================================
 
-Contents:
+Introduction
+============
 
 .. toctree::
    :maxdepth: 2
+
+   intro/about
+   intro/install
+
+Usage
+=====
+
+.. toctree::
+   :maxdepth: 2
+
+   usage/tutorial
+   usage/topic
+   usage/post
+
+Reference
+=========
+
+.. toctree::
+   :maxdepth: 2
+
+   reference/client
+   reference/datatypes
+   reference/oauth
 
 Indices and tables
 ==================

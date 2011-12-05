@@ -16,7 +16,7 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-.. module:: oauth
+.. module:: scoopy.oauth
 
 .. moduleauthor:: Mathieu D. (MatToufoutu) <mattoufootu[at]gmail.com>
 """
@@ -168,7 +168,7 @@ class OAuth(object):
     def generate_request_params(self, params):
         """
         Given a dict of parameters, add the needed oauth_* parameters
-        to it and an url-encoded string.
+        to it and return an url-encoded string.
         """
         request_params = {
             'oauth_version':        '1.0',

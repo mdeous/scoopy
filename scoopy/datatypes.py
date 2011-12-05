@@ -16,7 +16,7 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-.. module:: datatypes
+.. module:: scoopy.datatypes
 
 .. moduleauthor:: Mathieu D. (MatToufoutu) <mattoufootu[at]gmail.com>
 """
