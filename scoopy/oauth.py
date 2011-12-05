@@ -41,7 +41,7 @@ __all__ = [
     'OAuth',
 ]
 
-BASE_URL = 'https://www.scoop.it'
+BASE_URL = 'http://www.scoop.it'
 REQUEST_TOKEN_URL = '%s/oauth/request' % BASE_URL
 ACCESS_TOKEN_URL = '%s/oauth/access' % BASE_URL
 AUTHORIZE_URL = '%s/oauth/authorize' % BASE_URL
