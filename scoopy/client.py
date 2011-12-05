@@ -16,7 +16,7 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 """
-.. module:: api
+.. module:: client
 
 .. moduleauthor:: Mathieu D. (MatToufoutu) <mattoufootu[at]gmail.com>
 """
@@ -75,6 +75,7 @@ class ScoopItAPI(object):
     """
     Main class to access the Scoop.it API.
     """
+    #XXX: take care not to duplicate objets actions in ScoopItAPI and objects methods
 
     def __init__(self, consumer_key, consumer_secret):
         """
@@ -156,7 +157,7 @@ class ScoopItAPI(object):
                 ))
         return data
 
-    def get_profile(self, profile_id=None, curated=None, curable=None):
+    def profile(self, profile_id=None, curated=None, curable=None):
         """
         Access a user's profile.
 
@@ -181,7 +182,7 @@ class ScoopItAPI(object):
         response = self.request(PROFILE_URL, params)
         return User(self, response['user'])
 
-    def get_topic(self, topic_id, curated=None, curable=None,
+    def topic(self, topic_id, curated=None, curable=None,
                   order=None, tag=None, since=None):
         """
         Access a topic data (list of posts, statistics).
@@ -229,7 +230,21 @@ class ScoopItAPI(object):
         response = self.request(TOPIC_URL, params)
         return Topic(self, response['topic'], response['stats'])
 
-    def get_post(self, post_id):
+    def topic_reorder(self, topic_id, post_ids, start):
+        #TODO: write ScoopItAPI.topic_reorder() method
+        raise NotImplementedError
+
+    def topic_follow(self, topic_id):
+        self._topic_fum('follow', topic_id)
+    def topic_unfollow(self, topic_id):
+        self._topic_fum('unfollow', topic_id)
+    def topic_markread(self, topic_id):
+        self._topic_fum('markread', topic_id)
+    def _topic_fum(self, action, topic_id):
+        #TODO: write ScoopItAPI._topic_fum() method
+        raise NotImplementedError
+
+    def post(self, post_id):
         """
         Access a post data.
 
@@ -243,7 +258,55 @@ class ScoopItAPI(object):
         response = self.request(POST_URL, params)
         return Post(self, response)
 
-    def get_notifications(self, since=None):
+    def post_prepare(self, url):
+        #TODO: write ScoopItAPI.post_prepare() method
+        raise NotImplementedError
+
+    def post_create(self, title, url, content, image_url, topic_id, share_on):
+        #TODO: write ScoopItAPI.post_create() method
+        raise NotImplementedError
+
+    def post_comment(self, post_id, comment):
+        #TODO: write ScoopItAPI.post_comment() method
+        raise NotImplementedError
+
+    def post_thank(self, post_id):
+        #TODO: write ScoopItAPI.post_thank() method
+        raise NotImplementedError
+
+    def post_accept(self, post_id, title, content, image_url, share_on, topic_id):
+        #TODO: write ScoopItAPI.post_accept() method
+        raise NotImplementedError
+
+    def post_forward(self, post_id, title, content, image_url, share_on, topic_id):
+        #TODO: write ScoopItAPI.post_forward() method
+        raise NotImplementedError
+
+    def post_refuse(self, post_id, reason):
+        #TODO: write ScoopItAPI.post_refuse() method
+        raise NotImplementedError
+
+    def post_delete(self, post_id):
+        #TODO: write ScoopItAPI.post_delete() method
+        raise NotImplementedError
+
+    def post_edit(self, post_id, tags, title, content, image_url):
+        #TODO: write ScoopItAPI.post_edit() method
+        raise NotImplementedError
+
+    def post_pin(self, post_id):
+        #TODO: write ScoopItAPI.post_pin() method
+        raise NotImplementedError
+
+    def post_rescoop(self, post_id, topic_id):
+        #TODO: write ScoopItAPI.post_rescoop() method
+        raise NotImplementedError
+
+    def post_share(self, post_id):
+        #TODO: write ScoopItAPI.post_share() method
+        raise NotImplementedError
+
+    def notifications(self, since=None):
         """
         Notifications for the current user.
 
@@ -257,7 +320,7 @@ class ScoopItAPI(object):
         response = self.request(NOTIFICATIONS_URL, params)
         return [Notification(self, n) for n in response['notifications']]
 
-    def get_compilation(self, since, count):
+    def compilation(self, since, count):
         """
         Get a compilation of followed topics of the current user.
         Posts are ordered by date.
@@ -274,6 +337,14 @@ class ScoopItAPI(object):
         }
         response = self.request(COMPILATION_URL, params)
         return [Post(self, p) for p in response['posts']]
+
+    def test(self):
+        #TODO: write ScoopItAPI.test() method
+        raise NotImplementedError
+
+    def search(self, type, query, page, lang):
+        #TODO: write ScoopItAPI.search() method
+        raise NotImplementedError
 
     def resolve(self, entity, short_name):
         """

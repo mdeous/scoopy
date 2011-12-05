@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# bootstrap setuptools
-from ez_setup import use_setuptools
+# bootstrap distribute
+from distribute_setup import use_setuptools
 use_setuptools()
 from setuptools import setup
-#
 
 from scoopy import NAME, VERSION, AUTHOR
 
@@ -33,4 +32,5 @@ setup(
     license = 'GPL',
     classifiers = CLASSIFIERS,
     packages = ['scoopy'],
+    test_suite = 'scoopy.tests',
 )

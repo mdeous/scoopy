@@ -15,13 +15,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
+"""
+.. module:: oauth
 
+.. moduleauthor:: Mathieu D. (MatToufoutu) <mattoufootu[at]gmail.com>
+"""
+
+from __future__ import with_statement
 import os
-import shelve
-from cPickle import HIGHEST_PROTOCOL
 from time import time
 from urllib import urlencode
-from urlparse import parse_qsl
+try:
+    from urlparse import parse_qsl
+except ImportError:
+    from cgi import parse_qsl
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 import oauth2
 
@@ -35,7 +46,7 @@ __all__ = [
     'OAuth',
 ]
 
-BASE_URL = 'https://www.scoop.it'
+BASE_URL = 'http://www.scoop.it'
 REQUEST_TOKEN_URL = '%s/oauth/request' % BASE_URL
 ACCESS_TOKEN_URL = '%s/oauth/access' % BASE_URL
 AUTHORIZE_URL = '%s/oauth/authorize' % BASE_URL
@@ -87,28 +98,28 @@ class OAuth(object):
     def save_token(self, filepath):
         if os.path.exists(filepath):
             os.remove(filepath)
-        db = shelve.open(filepath, protocol=HIGHEST_PROTOCOL)
         if self.token is None:
             raise OAuthTokenError('no token found, get one first')
         #TODO: if access is not granted, warn user the token saved will be a request_token
-        db['oauth_token'] = self.token.key
-        db['oauth_token_secret'] = self.token.secret
-        db.close()
+        db = {'oauth_token': self.token.key,
+              'oauth_token_secret': self.token.secret}
+        with open(filepath, 'wb') as outfile:
+            pickle.dump(db, outfile, pickle.HIGHEST_PROTOCOL)
 
     def load_token(self, filepath):
-        db = shelve.open(filepath, protocol=HIGHEST_PROTOCOL)
+        with open(filepath, 'rb') as infile:
+            db = pickle.load(infile)
         self.token = oauth2.Token(
             db['oauth_token'],
             db['oauth_token_secret']
         )
         self.client = oauth2.Client(self.consumer, self.token)
-        db.close()
 
     def get_request_token(self):
         """
         Request the server for a request_token and return it.
         """
-        response, content = self.client.request(REQUEST_TOKEN_URL, 'GET')
+        response, content = self.client.request(REQUEST_TOKEN_URL)
         if response['status'] != '200':
             raise OAuthRequestFailure(
                 "failed to get request_token (%s)" % response['status']
