@@ -16,7 +16,7 @@ an easy and pythonic way.
 
 ### b) Setup:
 
-#### From GitHub:go
+#### From GitHub:
 
     git clone git://github.com/mattoufoutu/scoopy.git
     cd scoopy
