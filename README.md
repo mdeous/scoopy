@@ -29,4 +29,5 @@ TODO
 ## 3. Documentation:
 
 The complete documentation and API reference is available [here](http://scoopy.rtfd.org).
+
 A [manpage](http://media.readthedocs.org/man/scoopy/latest/scoopy.1) and an [epub](http://media.readthedocs.org/epub/scoopy/latest/scoopy.epub) version of the documentation is also available.
