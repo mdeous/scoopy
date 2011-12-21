@@ -21,7 +21,6 @@
 .. moduleauthor:: Mathieu D. (MatToufoutu) <mattoufootu[at]gmail.com>
 """
 
-from __future__ import with_statement
 import os
 from time import time
 from urllib import urlencode
@@ -103,12 +102,18 @@ class OAuth(object):
         #TODO: if access is not granted, warn user the token saved will be a request_token
         db = {'oauth_token': self.token.key,
               'oauth_token_secret': self.token.secret}
-        with open(filepath, 'wb') as outfile:
-            pickle.dump(db, outfile, pickle.HIGHEST_PROTOCOL)
+        outfile = open(filepath, 'wb')
+        try:
+            pickle.dump(db, outfile, protocol=pickle.HIGHEST_PROTOCOL)
+        finally:
+            outfile.close()
 
     def load_token(self, filepath):
-        with open(filepath, 'rb') as infile:
+        infile = open(filepath, 'rb')
+        try:
             db = pickle.load(infile)
+        finally:
+            infile.close()
         self.token = oauth2.Token(
             db['oauth_token'],
             db['oauth_token_secret']

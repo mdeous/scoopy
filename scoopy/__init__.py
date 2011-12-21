@@ -15,10 +15,6 @@
 #    along with Scoopy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from scoopy.client import *
-from scoopy.datatypes import *
-from scoopy.oauth import *
-
 NAME = 'scoopy'
 VERSION = '0.1'
 AUTHOR = 'Mathieu D. (MatToufoutu)'

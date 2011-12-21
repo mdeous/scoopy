@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# bootstrap distribute
-from distribute_setup import use_setuptools
-use_setuptools()
 from setuptools import setup
 
 from scoopy import NAME, VERSION, AUTHOR
 
-DEPENDENCIES = open('pip-requirements.txt').read().split()
 README = open('README.md').read().strip()
 CLASSIFIERS = [
     'Development Status :: 3 - Alpha',
@@ -19,6 +15,14 @@ CLASSIFIERS = [
     'Topic :: Internet',
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
+DEPENDENCIES = [
+    'distribute',
+    'oauth2',
+]
+try:
+    import json
+except ImportError:
+    DEPENDENCIES.append('simplejson')
 
 setup(
     name = NAME,
@@ -32,5 +36,6 @@ setup(
     license = 'GPL',
     classifiers = CLASSIFIERS,
     packages = ['scoopy'],
+    package_data = {'scoopy': ['tests/data/*.json']},
     test_suite = 'scoopy.tests',
 )

@@ -75,7 +75,9 @@ class Topic(ScoopItObject):
     }
 
     def __init__(self, api, raw_data, stats=None):
-        self.stats = None if (stats is None) else TopicStats(api, stats)
+        self.stats = None
+        if stats is not None:
+            self.stats = TopicStats(api, stats)
         self.curablePostCount = None
         self.unreadPostCount = None
         self.pinnedPost = None
