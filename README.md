@@ -26,7 +26,21 @@ an easy and pythonic way.
 
 TODO
 
-## 3. Documentation:
+## 3. Compatibility:
+
+Scoopy is tested with many Python versions and works with the following versions:
+
+* 2.4
+* 2.5
+* 2.6
+* 2.7
+
+### Why is there no Py3k support?
+
+Well, I would like to, but unfortunately, python-oauth2 (on which scoopy depends)
+isn't compatible with Py3k.
+
+## 4. Documentation:
 
 The complete documentation and API reference is available [here](http://scoopy.rtfd.org).
 
