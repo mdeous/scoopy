@@ -1,7 +1,7 @@
 # Scoopy
 --------
 
-**/!\\ Warning: this library is still in development and is therefore it is not usable yet /!\\**
+**/!\\ Warning: this library is still in development and therefore isn't usable yet /!\\**
 
 ## 1. About it:
 
